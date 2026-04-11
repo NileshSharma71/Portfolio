@@ -1,13 +1,14 @@
+// ⚠️ MUST be first: In ES Modules, all `import` statements are hoisted and
+// evaluated before any code runs. dotenv.config() as a function call would
+// always run *after* all imports. Using `import 'dotenv/config'` as a
+// side-effect import is the correct ESM pattern — it executes in import order.
+import 'dotenv/config';
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
-
 import contactRoutes from './routes/contact.js';
 import cvRoutes from './routes/cv.js';
-
-// Load environment variables from .env file
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
