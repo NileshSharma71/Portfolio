@@ -1,0 +1,287 @@
+/* ─── Contact Section ─────────────────────────────────────────────────────── */
+
+.contact-section {
+  background: var(--bg-secondary);
+}
+
+/* 2-column: info left | form right */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: var(--space-4xl);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+  }
+}
+
+/* ─── Info Panel ──────────────────────────────────────────────────────────── */
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.contact-info-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.contact-info-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* Info items list */
+.contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.contact-icon-box {
+  font-size: 1.2rem;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.contact-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.contact-item-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.contact-item-value {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.contact-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.contact-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.contact-link:hover {
+  color: var(--accent);
+}
+
+.contact-link:hover::after {
+  width: 100%;
+}
+
+/* ─── Form Wrapper ────────────────────────────────────────────────────────── */
+
+.contact-form-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Name + email side by side */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+@media (max-width: 520px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ─── Form Controls ───────────────────────────────────────────────────────── */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.form-label span {
+  color: var(--accent);
+  margin-left: 1px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: var(--bg-primary);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+}
+
+.form-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Textarea */
+.form-textarea {
+  resize: vertical;
+  min-height: 130px;
+  line-height: 1.6;
+}
+
+/* Character counter */
+.char-count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  transition: color 0.2s ease;
+}
+
+.char-count.char-warn {
+  color: #F59E0B;
+}
+
+/* ─── Feedback Messages ───────────────────────────────────────────────────── */
+
+.form-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.form-success {
+  background: rgba(5, 150, 105, 0.08);
+  border: 1px solid rgba(5, 150, 105, 0.25);
+  color: #059669;
+}
+
+body.dark .form-success {
+  background: rgba(5, 150, 105, 0.12);
+  color: #34D399;
+}
+
+.form-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #DC2626;
+}
+
+body.dark .form-error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #F87171;
+}
+
+/* ─── Submit Button ───────────────────────────────────────────────────────── */
+
+.contact-submit {
+  width: 100%;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+.contact-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Spinner inside button during loading */
+.btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Form Note ───────────────────────────────────────────────────────────── */
+
+.form-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
