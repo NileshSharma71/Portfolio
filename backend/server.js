@@ -11,6 +11,10 @@ import contactRoutes from './routes/contact.js';
 import cvRoutes from './routes/cv.js';
 
 const app = express();
+
+// Trust the reverse proxy (Render) so rate limiting works correctly
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 
 // ─── Middleware ────────────────────────────────────────────────────────────────
