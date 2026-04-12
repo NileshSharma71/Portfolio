@@ -8,7 +8,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import contactRoutes from './routes/contact.js';
-import cvRoutes from './routes/cv.js';
 
 const app = express();
 
@@ -44,7 +43,6 @@ const connectDB = async () => {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.use('/api/contact', contactRoutes);      // POST /api/contact
-app.use('/api/cv', cvRoutes);               // GET  /api/cv/download/:format
 
 // Health check endpoint — used by Render/Railway to confirm server is live
 app.get('/api/health', (req, res) => {
@@ -65,6 +63,5 @@ app.use((req, res) => {
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📁 CV download: http://localhost:${PORT}/api/cv/download/pdf`);
   });
 });

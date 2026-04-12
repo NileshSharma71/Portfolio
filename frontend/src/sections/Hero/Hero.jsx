@@ -71,10 +71,19 @@ export default function Hero() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // CV download — calls the backend REST API to stream the file
+  // CV download — handles static file download from the public folder
   const handleDownloadCV = (format) => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    window.open(`${apiUrl}/api/cv/download/${format}`, '_blank');
+    // Determine the exact filename based on the selected format
+    const fileName = format === 'pdf' ? 'Nilesh-Resume.pdf' : 'Nilesh-Resume.docx';
+    
+    // Create an anchor tag to trigger the browser's download prompt
+    const a = document.createElement('a');
+    a.href = `/${fileName}`; 
+    a.download = fileName; // The 'download' attribute forces download behavior
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
     setCvDropdownOpen(false);
   };
 
