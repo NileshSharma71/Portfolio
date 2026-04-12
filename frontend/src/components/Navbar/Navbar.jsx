@@ -18,28 +18,47 @@ export default function Navbar() {
   const [menuOpen,       setMenuOpen]        = useState(false);
   const [activeSection,  setActiveSection]   = useState('home');
 
-  // ── Scroll listener — adds shadow when page is scrolled ─────────────────
+  // ── Scroll listener — adds shadow + tracks active section ───────────────
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    let rafId = null;
 
-  // ── Intersection Observer — highlights active nav link ───────────────────
-  // OPTIMIZATION: uses native IntersectionObserver instead of expensive
-  // scroll event listeners with getBoundingClientRect() calls.
-  useEffect(() => {
-    const sections = document.querySelectorAll('section[id]');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { rootMargin: '-40% 0px -55% 0px' }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    const update = () => {
+      // Shadow on scroll
+      setScrolled(window.scrollY > 20);
+
+      // Pick whichever section's top is closest to (but above) the viewport midpoint
+      const sections = document.querySelectorAll('section[id]');
+      const midpoint = window.innerHeight * 0.35; // 35% down from top
+
+      let closest = null;
+      let closestDist = Infinity;
+
+      sections.forEach((sec) => {
+        const top = sec.getBoundingClientRect().top;
+        // Distance from the midpoint line — prefer sections that have passed it
+        const dist = Math.abs(top - midpoint);
+        if (top <= midpoint + 5 && dist < closestDist) {
+          closestDist = dist;
+          closest = sec.id;
+        }
+      });
+
+      // Fallback: if nothing has crossed the midpoint yet, use the first section
+      if (!closest && sections.length > 0) closest = sections[0].id;
+      if (closest) setActiveSection(closest);
+    };
+
+    const onScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(); // Run once on mount to set correct initial state
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Close mobile menu on resize to desktop
