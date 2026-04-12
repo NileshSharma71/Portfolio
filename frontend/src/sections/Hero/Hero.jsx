@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PERSONAL, ROLES } from '../../data/personal';
 import './Hero.css';
 
@@ -56,11 +56,26 @@ function useTypingEffect(words) {
 export default function Hero() {
   const typedRole = useTypingEffect(ROLES);
 
-  // CV download — calls the backend REST API to stream the PDF file.
-  // This is a REST API usage: GET /api/cv/download/pdf
-  const handleDownloadCV = () => {
+  // CV download dropdown state
+  const [cvDropdownOpen, setCvDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setCvDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // CV download — calls the backend REST API to stream the file
+  const handleDownloadCV = (format) => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    window.open(`${apiUrl}/api/cv/download/pdf`, '_blank');
+    window.open(`${apiUrl}/api/cv/download/${format}`, '_blank');
+    setCvDropdownOpen(false);
   };
 
   const scrollToProjects = () => {
@@ -117,20 +132,92 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="hero-ctas">
-            <button
-              className="btn btn-primary"
-              onClick={handleDownloadCV}
-              id="hero-download-cv"
-              aria-label="Download CV PDF"
-            >
-              {/* Download icon */}
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Download CV
-            </button>
+            {/* ── CV Split-Button Dropdown ── */}
+            <div className="cv-dropdown-wrapper" ref={dropdownRef}>
+              <div className={`cv-split-btn${cvDropdownOpen ? ' open' : ''}`}>
+                {/* Main label area — clicking opens the dropdown */}
+                <button
+                  className="cv-split-main"
+                  onClick={() => setCvDropdownOpen((v) => !v)}
+                  id="hero-download-cv"
+                  aria-haspopup="listbox"
+                  aria-expanded={cvDropdownOpen}
+                  aria-label="Download CV"
+                >
+                  {/* Download icon */}
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download CV
+                  {/* Chevron */}
+                  <svg
+                    className={`cv-chevron${cvDropdownOpen ? ' rotated' : ''}`}
+                    width="13" height="13" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Dropdown panel */}
+              <AnimatePresence>
+                {cvDropdownOpen && (
+                  <motion.div
+                    className="cv-dropdown-menu"
+                    role="listbox"
+                    aria-label="Choose CV format"
+                    initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                  >
+                    {/* PDF option */}
+                    <button
+                      className="cv-dropdown-item"
+                      role="option"
+                      id="cv-download-pdf"
+                      onClick={() => handleDownloadCV('pdf')}
+                    >
+                      <span className="cv-format-badge pdf-badge">PDF</span>
+                      <span className="cv-item-label">
+                        <span className="cv-item-name">PDF Version</span>
+                        <span className="cv-item-desc">Best for sharing &amp; viewing</span>
+                      </span>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="cv-item-arrow" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                    </button>
+
+                    <div className="cv-dropdown-divider" />
+
+                    {/* DOCX option */}
+                    <button
+                      className="cv-dropdown-item"
+                      role="option"
+                      id="cv-download-docx"
+                      onClick={() => handleDownloadCV('docx')}
+                    >
+                      <span className="cv-format-badge docx-badge">DOC</span>
+                      <span className="cv-item-label">
+                        <span className="cv-item-name">Word Version</span>
+                        <span className="cv-item-desc">Editable .docx format</span>
+                      </span>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="cv-item-arrow" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             <button
               className="btn btn-outline"
